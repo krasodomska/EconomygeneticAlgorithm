@@ -1,0 +1,18 @@
+public enum BuildingName {
+    BASKET,
+    COW,
+    FIELD,
+    ORCHAND,
+
+    AXE,
+    BRICK_MANUFACTUR,
+    QUARRY,
+
+    CRAFTING_SPOT,
+    TOOL_MANUFACTUR,
+    TOOL_JOURNEYMAN,
+
+    LOOM, //KROSNO TKACKIE
+    CLOTHES_MANUFACTUR,
+    CLOTHES_JOURNEYMAN
+}
