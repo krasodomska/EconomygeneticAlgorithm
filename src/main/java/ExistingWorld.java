@@ -21,6 +21,8 @@ public class ExistingWorld {
     }
 
     static void createAgents(int numberOfAgent) {
+        String[] familyColor = {"red", "green", "blue", "purple", "black", "white", "pink"};
+        int colorIterator = 0;
         while (numberOfAgent > 0) {
             HashMap<BuildingName, Integer> newBuildings = new HashMap<>();
             for (int i = 0; i < 3; i++) {
@@ -32,24 +34,53 @@ public class ExistingWorld {
                     newBuildings.put(newBuilding, 1);
                 }
             }
-            agents.add(new Agent(10,2, 1000, newBuildings));
+
+            agents.add(new Agent(familyColor[colorIterator], 10, 2, 1000, newBuildings, (int) Math.random() * (numberOfMonthPerYear-1)+1));
+            colorIterator++;
             numberOfAgent--;
         }
     }
 
     public static void main(String[] args) {
         createAgents(5);
-        int a = 24;
+        int testingTimeInMonth = 36;
         agents.forEach(agent -> System.out.println(agent));
         System.out.println();
-        while (a > 0) {
+        while (testingTimeInMonth > 0) {
             newMonth();
-            //System.out.print(agents);
-            agents.forEach(agent -> agent.production(currentMonth));
-          //agents.forEach(agent -> agent.consumption(currentMonth));
+            LinkedList<Agent> deadAgent = new LinkedList<>();
+            LinkedList<Agent> newAgents = new LinkedList<>();
+            agents.forEach(agent -> {
+                agent.production(currentMonth);
+
+                //TO DO: MarketTime
+
+                agent.consumption(currentMonth);
+
+                if (agent.starvationDeath()) deadAgent.add(agent);
+                if(agent.newAgent) newAgents.add(agent);
+            });
+
+            //death time
+            for (Agent zombie : deadAgent) {
+                System.out.println("Zombie "+ zombie);
+                agents.remove(zombie);
+            }
+//            deadAgent.forEach(zombie -> {
+//                System.out.println("Zombie "+ zombie);              ///why this not work ????
+//                agents.remove(zombie)
+//
+//            });
+
+            //born time
+            for(Agent newAgent : newAgents){
+                agents.get(agents.indexOf(newAgent)).reproduction();
+            }
+
+
             agents.forEach(agent -> System.out.println(agent));
             System.out.println();
-            a--;
+            testingTimeInMonth--;
 
         }
     }
