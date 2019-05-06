@@ -6,13 +6,15 @@ public class Building {
     ItemName itemProduced;
     BuildingName name;
     ArrayList<Integer> monthWithProfit = new ArrayList<Integer>();
+    boolean toolNeed;
 
-    Building(BuildingName name, int scaledProfit, int unscaledProfit, ItemName itemProduced, ArrayList<Integer> monthWithProfit) {
+    Building(BuildingName name, int scaledProfit, int unscaledProfit, ItemName itemProduced, ArrayList<Integer> monthWithProfit, boolean toolNeed) {
         this.name = name;
         this.scaledProfit = scaledProfit;
         this.unscaledProfit = unscaledProfit;
         this.itemProduced = itemProduced;
         this.monthWithProfit.addAll(monthWithProfit);
+        this.toolNeed = toolNeed;
     }
 
     /**
