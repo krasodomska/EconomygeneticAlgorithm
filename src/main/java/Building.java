@@ -27,6 +27,15 @@ public class Building {
     }
 
     /**
+     * this is specific mechanic for orchand - produce food after one year
+     * @param currentMonth - which month pass
+     */
+    public void delayedProfit(int currentMonth){
+        if(this.name == BuildingName.ORCHAND);
+        if(this.monthWithProfit.contains(currentMonth))return;
+        this.monthWithProfit.add(currentMonth);
+    }
+    /**
      * following methods and functions are generic and required for serialising
      */
     public Building() {
@@ -71,4 +80,5 @@ public class Building {
     public void setMonthWithProfit(ArrayList<Integer> monthWithProfit) {
         this.monthWithProfit = monthWithProfit;
     }
+
 }

@@ -1,14 +1,12 @@
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class ExistingWorld {
     static int numberOfMonthPerYear = 12;
     static int currentMonth = 1;
-    LinkedList<Agent> agents = new LinkedList<Agent>();
+    static Buildings buildings = new Buildings(numberOfMonthPerYear);
+    static BuildingsListForDraw buildingsListForDraw = new BuildingsListForDraw();
 
-
-    static void createAgent(int numberOfAgent) {
-
-    }
 
     /**
      * simulate time running - position next month
@@ -22,6 +20,8 @@ public class ExistingWorld {
     }
 
     public static void main(String[] args) {
-        newMonth();
+        while(true) {
+            newMonth();
+        }
     }
 }
