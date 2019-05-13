@@ -1,13 +1,18 @@
 public class Item {
     ItemName name;
-    int sellPrice;
-    int buyPrice;
-    int amount;
+    int sellPrice = 1;
+    int buyPrice = 1;
+    int amount = 0;
 
-    Item(ItemName name, int startPrice, int startAmount){
+    Item(ItemName name){
         this.name = name;
-        sellPrice= startPrice;
-        buyPrice = startPrice;
-        amount = startAmount;
+//        sellPrice= startPrice;
+//        buyPrice = startPrice;
+//        amount = startAmount;
+    }
+
+    @Override
+    public String toString(){
+        return name + ": " + amount;
     }
 }

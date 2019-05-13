@@ -7,6 +7,7 @@ public class Building {
     BuildingName name;
     ArrayList<Integer> monthWithProfit = new ArrayList<Integer>();
     boolean toolNeed;
+    int takingPlace = 0;
 
     Building(BuildingName name, int scaledProfit, int unscaledProfit, ItemName itemProduced, ArrayList<Integer> monthWithProfit, boolean toolNeed) {
         this.name = name;
@@ -15,6 +16,7 @@ public class Building {
         this.itemProduced = itemProduced;
         this.monthWithProfit.addAll(monthWithProfit);
         this.toolNeed = toolNeed;
+        if(scaledProfit >10) takingPlace = 1;
     }
 
     /**
@@ -27,6 +29,7 @@ public class Building {
             return scaledProfit * numberOfBuilding + unscaledProfit;
         else return 0;
     }
+
 
     /**
      * this is specific mechanic for orchand - produce food after one year

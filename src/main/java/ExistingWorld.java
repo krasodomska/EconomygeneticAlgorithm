@@ -1,87 +1,62 @@
-import java.util.HashMap;
 import java.util.LinkedList;
 
 public class ExistingWorld {
-    static int numberOfMonthPerYear = 12;
-    static int currentMonth = 1;
-    static Buildings buildings = new Buildings(numberOfMonthPerYear);
+    static Buildings buildings = new Buildings(Environment.numberOfMonthPerYear);
     static BuildingsListForDraw buildingsListForDraw = new BuildingsListForDraw();
-    static LinkedList<Agent> agents = new LinkedList<>();
+    static boolean noPlace = false;
+
+
 
 
     /**
-     * simulate time running - position next month
+     * there are same action that have to be done before simulation start running
      */
-    static void newMonth() {
-        if (currentMonth < numberOfMonthPerYear) {
-            currentMonth++;
-            return;
-        }
-        currentMonth = 1;
-    }
-
-    static void createAgents(int numberOfAgent) {
-        String[] familyColor = {"red", "green", "blue", "purple", "black", "white", "pink"};
-        int colorIterator = 0;
-        while (numberOfAgent > 0) {
-            HashMap<BuildingName, Integer> newBuildings = new HashMap<>();
-            for (int i = 0; i < 3; i++) {
-                int randomIndex = (int) (Math.random() * buildingsListForDraw.allBuildings.size() - 1);
-                BuildingName newBuilding = buildingsListForDraw.allBuildings.get(randomIndex);
-                if (newBuildings.containsKey(newBuilding)) {
-                    newBuildings.put(newBuilding, newBuildings.get(newBuilding) + 1);
-                } else {
-                    newBuildings.put(newBuilding, 1);
-                }
-            }
-
-            agents.add(new Agent(familyColor[colorIterator], 10, 2, 1000, newBuildings, (int) Math.random() * (numberOfMonthPerYear-1)+1));
-            colorIterator++;
-            numberOfAgent--;
-        }
-    }
-
-    public static void main(String[] args) {
-        createAgents(5);
-        int testingTimeInMonth = 36;
-        agents.forEach(agent -> System.out.println(agent));
+    public static void init() {
+        Agents.createAgents(11, Environment.numberOfMonthPerYear);
+        Agents.agents.forEach(agent -> System.out.println(agent));
         System.out.println();
+    }
+
+    public static void gameRun(int testingTimeInMonth) {
+        int i = 0;
         while (testingTimeInMonth > 0) {
-            newMonth();
-            LinkedList<Agent> deadAgent = new LinkedList<>();
-            LinkedList<Agent> newAgents = new LinkedList<>();
-            agents.forEach(agent -> {
-                agent.production(currentMonth);
+            Environment.newMonth();
 
-                //TO DO: MarketTime
+            LifeCycle.production();
+            LifeCycle.consumption();
+            LifeCycle.trading();
 
-                agent.consumption(currentMonth);
-
-                if (agent.starvationDeath()) deadAgent.add(agent);
-                if(agent.newAgent) newAgents.add(agent);
-            });
-
-            //death time
-            for (Agent zombie : deadAgent) {
-                System.out.println("Zombie "+ zombie);
-                agents.remove(zombie);
+            for(Agent agent: Agents.agents){
+                if (agent.gold < 0)return;
             }
-//            deadAgent.forEach(zombie -> {
-//                System.out.println("Zombie "+ zombie);              ///why this not work ????
-//                agents.remove(zombie)
-//
-//            });
-
-            //born time
-            for(Agent newAgent : newAgents){
-                agents.get(agents.indexOf(newAgent)).reproduction();
-            }
-
-
-            agents.forEach(agent -> System.out.println(agent));
-            System.out.println();
+            LifeCycle.reproduction();
+            LifeCycle.dieing();
+            LifeCycle.ageing();
             testingTimeInMonth--;
 
+
+            System.out.println(i + " number of agents: "+ Agents.agents.size());
+            i++;
+
+            //debug
+//            Agents.agents.forEach(agent -> System.out.println(agent));
+//            System.out.println();
+
         }
+
     }
+
+
+    public static void main(String[] args) {
+        init();
+        int testingTimeInMonth = 300;
+        gameRun(testingTimeInMonth);
+        Agents.agents.forEach(agent -> System.out.println(agent));
+        System.out.println();
+        System.out.println();
+        System.out.println("Place: " + Environment.placeInTheWorld);
+        System.out.println("number of agents: " + Agents.agents.size());
+
+    }
+
 }
