@@ -5,6 +5,11 @@ public class Trading {
     static LinkedList<Agent> salesMen = new LinkedList();
     static LinkedList<Agent> buyers = new LinkedList<>();
 
+    /**
+     * full trading per one month in simulation
+     * @param tradingShifts
+     * @param agents
+     */
     public static void trade(int tradingShifts, LinkedList<Agent> agents) {
         //System.out.println();
 
@@ -32,6 +37,11 @@ public class Trading {
         }
     }
 
+    /**
+     * divine agents too buyer and seller
+     * @param item
+     * @param agents
+     */
     static void divideAgents(ItemName item, LinkedList<Agent> agents) {
         buyers.clear();
         salesMen.clear();
@@ -51,6 +61,12 @@ public class Trading {
         });
     }
 
+    /**
+     * meet random salesMan and buyer - check if trasation is possible make trasation
+     * @param salesMan
+     * @param buyer
+     * @param item
+     */
     static void oneMeeting(Agent salesMan, Agent buyer, ItemName item) {
         int sellPrice = salesMan.items.get(item).sellPrice;
         int buyPrice;
@@ -93,6 +109,14 @@ public class Trading {
 
     }
 
+    /**
+     * transaction between salesMan and byer
+     * @param salesMan
+     * @param buyer
+     * @param item
+     * @param sellPrice
+     * @param buyPrice
+     */
     static void transaction(Agent salesMan, Agent buyer, ItemName item, int sellPrice, int buyPrice) {
         int itemPrice = (buyPrice - sellPrice) / 2 + sellPrice;
         salesMan.items.get(item).sellPrice = itemPrice;
@@ -104,14 +128,28 @@ public class Trading {
         buyer.gold -= itemPrice;
     }
 
+    /**
+     * create random salesMan
+     * @return
+     */
     static Agent salesMan() {
         return salesMen.get((int) Math.random() * (salesMen.size() - 1));
     }
 
+    /**
+     * create random buyer
+     * @return
+     */
     static Agent buyer() {
         return buyers.get((int) Math.random() * (salesMen.size() - 1));
     }
 
+    /**
+     *
+     * @param buyer
+     * @param salesMan
+     * @return how much is for food after mofification
+     */
     static int foodPrice(Agent buyer, Agent salesMan) {
         int buyPrice = buyer.items.get(ItemName.FOOD).buyPrice;
         int foodAmount = buyer.items.get(ItemName.FOOD).amount;
@@ -127,6 +165,10 @@ public class Trading {
 
     }
 
+    /**
+     * when there is problem with food agent have one additional trade
+     * @param salesMan
+     */
     static void foodPanic(Agent salesMan) {
         for (Agent agent : buyers) {
             if (agent.items.get(ItemName.FOOD).amount == -3) {

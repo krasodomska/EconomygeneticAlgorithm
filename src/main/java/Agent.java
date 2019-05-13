@@ -54,6 +54,9 @@ public class Agent {
 
     }
 
+    /**
+     * checking how many place take buildings form this agent
+     */
     void takePlace() {
         takingPlace = 0;
         for (BuildingName building : buildings.keySet()) {
@@ -173,6 +176,9 @@ public class Agent {
         return false;
     }
 
+    /**
+     * create new agent, when reproduction is possible
+     */
     public void reproduction() {
 
         this.gold /= 2;
@@ -192,6 +198,9 @@ public class Agent {
         newAgent = false;
     }
 
+    /**
+     * when there is too little place agents can have only base buildings
+     */
     public void buildingsDownGrade() {
         HashSet<BuildingName> buildingForDemolition = new HashSet<>();
 
