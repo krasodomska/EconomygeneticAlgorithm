@@ -1,3 +1,5 @@
+package main;
+
 public class Environment {
     static int numberOfMonthPerYear = 12;
     static int currentMonth = 1;

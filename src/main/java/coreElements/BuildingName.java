@@ -1,3 +1,5 @@
+package coreElements;
+
 public enum BuildingName {
     BASKET,
     COW,

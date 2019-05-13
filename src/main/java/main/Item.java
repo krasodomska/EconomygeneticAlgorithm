@@ -1,3 +1,7 @@
+package main;
+
+import coreElements.ItemName;
+
 public class Item {
     ItemName name;
     int sellPrice = 1;

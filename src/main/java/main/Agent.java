@@ -1,3 +1,8 @@
+package main;
+
+import coreElements.BuildingName;
+import coreElements.ItemName;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,7 +33,7 @@ public class Agent {
         for (ItemName name : ItemName.values()) {
             items.put(name, new Item(name));
         }
-//        for (ItemName item : items.keySet()) {
+//        for (coreElements.ItemName item : items.keySet()) {
 //
 //        }
 
@@ -182,8 +187,8 @@ public class Agent {
     public void reproduction() {
 
         this.gold /= 2;
-//        for (ItemName item : items.keySet()) {
-//            if (item == ItemName.FOOD) continue;
+//        for (coreElements.ItemName item : items.keySet()) {
+//            if (item == coreElements.ItemName.FOOD) continue;
 //            items.get(item).amount /= 2;
 //        }
 

@@ -1,3 +1,7 @@
+package main;
+
+import coreElements.ItemName;
+
 import java.util.LinkedList;
 
 public class Trading {

@@ -1,6 +1,6 @@
-import java.util.List;
+package coreElements;
 
-enum ItemName {
+public enum ItemName {
     FOOD,
     CLOTHES,
     TOOL,

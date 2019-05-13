@@ -1,3 +1,8 @@
+package main;
+
+import coreElements.BuildingName;
+import coreElements.ItemName;
+
 import java.util.ArrayList;
 
 public class Building {

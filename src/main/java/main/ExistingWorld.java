@@ -1,4 +1,4 @@
-import java.util.LinkedList;
+package main;
 
 public class ExistingWorld {
     static Buildings buildings = new Buildings(Environment.numberOfMonthPerYear);
@@ -39,7 +39,7 @@ public class ExistingWorld {
             i++;
 
             //debug
-//            Agents.agents.forEach(agent -> System.out.println(agent));
+//            main.Agents.agents.forEach(agent -> System.out.println(agent));
 //            System.out.println();
 
         }
