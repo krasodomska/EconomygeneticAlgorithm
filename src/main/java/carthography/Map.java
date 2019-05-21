@@ -7,7 +7,7 @@ public class Map {
     public String toString() {
         for (Tile[] line : tiles){
             for (Tile tile : line){
-                System.out.print(tile.biome.charAt(0) + ",");
+                System.out.print("" +tile.biome.charAt(0) + tile.size + ",");
             }
             System.out.println();
         }
