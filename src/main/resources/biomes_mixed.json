@@ -1,0 +1,47 @@
+[
+  {
+    "firstBiome": "FARMLANDS",
+    "secondBiome": "MOUNTAINS",
+    "finalBiome": {
+      "biomeName": "HIGHLANDS",
+      "doubleEfficiency": [
+        "CLOTHES"
+      ],
+      "halfEfficiency": [
+        "GOLD",
+        "FOOD",
+        "LUMBER"
+      ],
+      "noEfficiency": []
+    }
+  },
+  {
+    "firstBiome": "FARMLANDS",
+    "secondBiome": "OCEAN",
+    "finalBiome": {
+      "biomeName": "SEASHORE",
+      "doubleEfficiency": [],
+      "halfEfficiency": [],
+      "noEfficiency": [
+        "LUMBER",
+        "CLOTHES"
+      ]
+    }
+  },
+  {
+    "firstBiome": "FARMLANDS",
+    "secondBiome": "DESERT",
+    "finalBiome": {
+      "biomeName": "BADLANDS",
+      "doubleEfficiency": [
+        "CLOTHES"
+      ],
+      "halfEfficiency": [
+        "FOOD"
+      ],
+      "noEfficiency": [
+        "LUMBER"
+      ]
+    }
+  }
+]

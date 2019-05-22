@@ -1,24 +1,24 @@
 package carthography;
 
-import main.Agent;
-
-import java.util.ArrayList;
-import java.util.List;
-
 public class Tile {
-    Integer size;
     String biome;
-    List<Agent> residents;
+    private int x;
+    private int y;
+    private Integer size;
 
-    public Tile(Integer size, Biome biome, List<Agent> residents) {
+    public Tile(Integer size, String biome, int x, int y) {
         this.size = size;
-        this.biome = biome.getBiomeName();
-        this.residents = residents;
+        this.biome = biome;
+        this.x = x;
+        this.y = y;
     }
 
     public Tile(Integer size, String biome) {
         this.size = size;
         this.biome = biome;
-        this.residents = new ArrayList<>();
+    }
+
+    public boolean inRange(Tile another, Integer range){
+        return Math.abs(another.x - this.x) + Math.abs(another.y - this.y) <= range;
     }
 }

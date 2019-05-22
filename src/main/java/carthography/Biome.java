@@ -10,6 +10,9 @@ public class Biome {
     private List<ItemName> halfEfficiency;
     private List<ItemName> noEfficiency;
 
+    public Biome() {
+    }
+
     public Biome(String biomeName, List<ItemName> doubleEfficiency, List<ItemName> halfEfficiency, List<ItemName> noEfficiency) {
         this.biomeName = biomeName;
         this.doubleEfficiency = doubleEfficiency;

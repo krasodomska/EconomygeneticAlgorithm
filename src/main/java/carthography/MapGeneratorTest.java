@@ -1,10 +1,12 @@
 package carthography;
 
 
+import coreElements.StaticData;
 
 class MapGeneratorTest {
     public static void main(String[] args) {
 
-        System.out.println(new MapGenerator().generate(20, 30, 1, 7));
+        StaticData.getAllBiomes()
+                .forEach(biome -> System.out.println(biome.getBiomeName()));
     }
 }

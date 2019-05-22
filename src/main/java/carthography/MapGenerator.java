@@ -97,7 +97,7 @@ public class MapGenerator {
         ready.tiles = new Tile[width][height];
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                ready.tiles[x][y] = new Tile(getIntBt(1, 7), biomeMap[x][y]);
+                ready.tiles[x][y] = new Tile(getIntBt(1, 7), biomeMap[x][y], x, y);
             }
         }
         return ready;
