@@ -7,36 +7,36 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 public class StaticData {
-    private static List<Biome> startBiomes;
-    private static List<BiomeMixer> mixedBiomes;
+    private static Map<String, Biome> startBiomes;
+    private static Map<String, BiomeMixer> mixedBiomes;
 
     StaticData() {
         loadData();
     }
 
-    public static List<Biome> getStartBiomes() {
+    public static Map<String, Biome> getStartBiomes() {
         if (startBiomes == null) return new StaticData().getStartBiomes();
         return startBiomes;
     }
 
-    public static List<BiomeMixer> getMixedBiomes() {
+    public static Map<String, BiomeMixer> getMixedBiomes() {
         if (startBiomes == null) return new StaticData().getMixedBiomes();
         return mixedBiomes;
     }
 
-    public static List<Biome> getAllBiomes() {
-        List<Biome> biomes = new ArrayList<>(getStartBiomes());
-        biomes.addAll(getMixedBiomes().stream().map(biomeMixer -> biomeMixer.getFinalBiome()).collect(Collectors.toList()));
+    public static Map<String, Biome> getAllBiomes() {
+        Map<String, Biome> biomes = new HashMap<>(getStartBiomes());
+        getMixedBiomes().values().forEach(biomeMixer -> biomes.put(biomeMixer.getFinalBiome().getBiomeName(), biomeMixer.getFinalBiome()));
         return biomes;
     }
 
-    public static void saveData(){
+    public static void saveData() {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             objectMapper.writeValue(new File("target/biomes_start.json"), getStartBiomes());
@@ -45,14 +45,39 @@ public class StaticData {
             e.printStackTrace();
         }
     }
-    public static void loadData(){
-        String startBiomes = StaticData.class.getClassLoader().getResource("biomes_start.json").getFile();
-        String mixBiomes = StaticData.class.getClassLoader().getResource("biomes_mixed.json").getFile();
+
+    public static void loadData() {
+        List<Biome> startBiomesList = Collections.emptyList();
+        List<BiomeMixer> mixedBiomesList = Collections.emptyList();
         try {
-            StaticData.startBiomes = new ObjectMapper().readValue(new File(startBiomes), new TypeReference<List<Biome>>(){});
-            StaticData.mixedBiomes = new ObjectMapper().readValue(new File(mixBiomes), new TypeReference<List<BiomeMixer>>(){});
+            startBiomesList = new ObjectMapper()
+                    .readValue(
+                            new File(
+                                    StaticData.class.
+                                            getClassLoader().
+                                            getResource("biomes_start.json")
+                                            .getFile()
+                            ),
+                            new TypeReference<List<Biome>>() {
+                            });
+
+            mixedBiomesList = new ObjectMapper()
+                    .readValue(
+                            new File(
+                                    StaticData.class.
+                                            getClassLoader().
+                                            getResource("biomes_mixed.json")
+                                            .getFile()
+                            ),
+                            new TypeReference<List<BiomeMixer>>() {
+                            });
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        startBiomes = new HashMap<>();
+        mixedBiomes = new HashMap<>();
+        startBiomesList.forEach(biome -> startBiomes.put(biome.getBiomeName(), biome));
+        mixedBiomesList.forEach(biome -> mixedBiomes.put(biome.getFinalBiome().getBiomeName(), biome));
     }
 }

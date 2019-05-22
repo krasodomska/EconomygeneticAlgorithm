@@ -1,6 +1,6 @@
 package carthography;
 
-public class Map {
+public class TileMap {
     Tile[][] tiles;
 
     @Override

@@ -10,12 +10,12 @@ public class MapGenerator {
     int width;
     int height;
 
-    public Map generate(int width, int height, int minTileSize, int maxTileSize) {
+    public TileMap generate(int width, int height, int minTileSize, int maxTileSize) {
         this.width = width;
         this.height = height;
         biomeMap = new String[width][height];
 
-        for (Biome biome : StaticData.getStartBiomes()) {
+        for (Biome biome : StaticData.getStartBiomes().values()) {
             int xCor = getIntBt(1, width - 2);
             int yCor = getIntBt(1, height - 2);
             while (biomeMap[xCor][yCor] != null) {
@@ -43,13 +43,13 @@ public class MapGenerator {
                 else {
                     String biome1 = biomeMap[x][y];
                     String biome2 = biomeMap[x][y + 1];
-                    tmp[x][y] = StaticData.getMixedBiomes().stream()
+                    tmp[x][y] = StaticData.getMixedBiomes().values().stream()
                             .map(biomeMixer -> biomeMixer.mixBiomes(biome1, biome2))
                             .filter(Objects::nonNull)
                             .map(Biome::getBiomeName)
                             .findFirst()
                             .orElse(biomeMap[x][y]);
-                    tmp[x][y + 1] = StaticData.getMixedBiomes().stream()
+                    tmp[x][y + 1] = StaticData.getMixedBiomes().values().stream()
                             .map(biomeMixer -> biomeMixer.mixBiomes(biome1, biome2))
                             .filter(Objects::nonNull)
                             .map(Biome::getBiomeName)
@@ -67,13 +67,13 @@ public class MapGenerator {
                 else {
                     String biome1 = biomeMap[x][y];
                     String biome2 = biomeMap[x + 1][y];
-                    tmp[x][y] = StaticData.getMixedBiomes().stream()
+                    tmp[x][y] = StaticData.getMixedBiomes().values().stream()
                             .map(biomeMixer -> biomeMixer.mixBiomes(biome1, biome2))
                             .filter(Objects::nonNull)
                             .map(Biome::getBiomeName)
                             .findFirst()
                             .orElse(biomeMap[x][y]);
-                    tmp[x + 1][y] = StaticData.getMixedBiomes().stream()
+                    tmp[x + 1][y] = StaticData.getMixedBiomes().values().stream()
                             .map(biomeMixer -> biomeMixer.mixBiomes(biome1, biome2))
                             .filter(Objects::nonNull)
                             .map(Biome::getBiomeName)
@@ -92,8 +92,8 @@ public class MapGenerator {
         }
     }
 
-    Map convertToMap() {
-        Map ready = new Map();
+    TileMap convertToMap() {
+        TileMap ready = new TileMap();
         ready.tiles = new Tile[width][height];
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
