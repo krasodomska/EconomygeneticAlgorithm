@@ -5,33 +5,36 @@ import coreElements.ItemName;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
+
+import static coreElements.Utils.randomBetween;
 
 public class Agents {
-    static int itemsAmount = 40;
-    static int buyPrice = 10;
-    static int sellPrice = 5;
+    private static final int itemsAmount = 40;
+    private static final int buyPrice = 10;
+    private static final int sellPrice = 5;
+
     static LinkedList<Agent> agents = new LinkedList<>();
-    static HashMap<ItemName, Stock> startItems(){
-        HashMap<ItemName, Stock> startItems = new HashMap<>();
+    private static Map<ItemName, Stock> startItems = new HashMap<>();
+    private static String[] familyColor = {"red", "green", "blue", "purple", "black", "white", "pink", "olive", "gold", "silver", "aqua"};
+
+    private static void startItems() {
         for (ItemName name : ItemName.values()) {
             startItems.put(name, new Stock(name));
             startItems.get(name).buyPrice = buyPrice;
             startItems.get(name).sellPrice = sellPrice;
             startItems.get(name).amount = itemsAmount;
-            if(name == ItemName.GOLD) startItems.get(name).amount = 0;
-
+            if (name == ItemName.GOLD) startItems.get(name).amount = 0;
         }
-
-        return startItems;
     }
 
     static void createAgents(int numberOfAgent, int numberOfMonthPerYear) {
-        String[] familyColor = {"red", "green", "blue", "purple", "black", "white", "pink", "olive", "gold", "silver", "aqua"};
+        startItems();
         int colorIterator = 0;
         while (numberOfAgent > 0) {
             HashMap<BuildingName, Integer> newBuildings = new HashMap<>();
             for (int i = 0; i < 2; i++) {
-                int randomIndex = (int) (Math.random() * BuildingsListForDraw.allBuildings.size() - 1);
+                int randomIndex = randomBetween(0, BuildingsListForDraw.allBuildings.size() - 1);
                 BuildingName newBuilding = BuildingsListForDraw.allBuildings.get(randomIndex);
                 if (newBuildings.containsKey(newBuilding)) {
                     newBuildings.put(newBuilding, newBuildings.get(newBuilding) + 1);
@@ -40,14 +43,19 @@ public class Agents {
                 }
             }
 
-            agents.add(new Agent(familyColor[colorIterator], 100, newBuildings, (int) Math.random() * (numberOfMonthPerYear-1)+1,startItems()));
+            agents.add(new Agent(
+                    familyColor[colorIterator],
+                    100,
+                    newBuildings,
+                    randomBetween(1, numberOfMonthPerYear),
+                    startItems)
+            );
 
-            colorIterator++;
+            colorIterator = (colorIterator + 1) % familyColor.length;
             numberOfAgent--;
-
         }
 
-        agents.forEach(agent -> Environment.takePlace(agent));
+        agents.forEach(Environment::takePlace);
     }
 
 }

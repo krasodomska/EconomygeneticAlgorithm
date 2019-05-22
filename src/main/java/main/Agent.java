@@ -5,9 +5,10 @@ import coreElements.ItemName;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
-import static coreElements.Utils.numberBetween;
+import static coreElements.Utils.randomBetween;
 import static main.Buildings.buildings;
 import static main.BuildingsListForDraw.*;
 
@@ -27,7 +28,7 @@ public class Agent {
     HashMap<BuildingName, Integer> agentBuildings = new HashMap<>();
     HashMap<ItemName, Stock> items = new HashMap<>();
 
-    public Agent(String familyColor, int startGold, HashMap<BuildingName, Integer> agentBuildings, int checkingLumbersMonth, HashMap<ItemName, Stock> items) {
+    public Agent(String familyColor, int startGold, HashMap<BuildingName, Integer> agentBuildings, int checkingLumbersMonth, Map<ItemName, Stock> items) {
         this.gold = startGold;
         this.agentBuildings.putAll(agentBuildings);
         this.familyColor = familyColor;
@@ -239,9 +240,9 @@ public class Agent {
      */
     BuildingName buildingMutation(BuildingName building) {
         double random = Math.random();
-        if (random < 0.01) return allBuildings.get(numberBetween(0, allBuildings.size() - 1));
-        else if (random < 0.04) return getBuildingsWithEqualProfit(building).get(numberBetween(0, getBuildingsWithEqualProfit(building).size()));
-        else if (random < 0.1) return getBuildingsWithSameItem(building).get(numberBetween(0, getBuildingsWithSameItem(building).size()));
+        if (random < 0.01) return allBuildings.get(randomBetween(0, allBuildings.size() - 1));
+        else if (random < 0.04) return getBuildingsWithEqualProfit(building).get(randomBetween(0, getBuildingsWithEqualProfit(building).size()));
+        else if (random < 0.1) return getBuildingsWithSameItem(building).get(randomBetween(0, getBuildingsWithSameItem(building).size()));
         return building;
     }
 

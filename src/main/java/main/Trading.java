@@ -3,22 +3,22 @@ package main;
 import coreElements.ItemName;
 
 import java.util.LinkedList;
+import java.util.List;
+
+import static coreElements.Utils.randomBetween;
 
 public class Trading {
 
-    static LinkedList<Agent> salesMen = new LinkedList();
-    static LinkedList<Agent> buyers = new LinkedList<>();
+    private static List<Agent> salesMen = new LinkedList<>();
+    private static List<Agent> buyers = new LinkedList<>();
 
     /**
      * full trading per one month in simulation
+     *
      * @param tradingShifts
      * @param agents
      */
     public static void trade(int tradingShifts, LinkedList<Agent> agents) {
-        //System.out.println();
-
-        //
-        // System.out.println();
         for (ItemName item : ItemName.values()) {
             int shifts = tradingShifts;
             while (shifts > 0) {
@@ -31,22 +31,20 @@ public class Trading {
                     if (salesMan.items.get(item).amount < 3)
                         salesMen.remove(salesMan);
                     buyers.remove(buyer);
-                    if(item == ItemName.GOLD) break;
-                    //debug
-                    //System.out.println(item);
+                    if (item == ItemName.GOLD) break;
                 }
                 shifts--;
             }
-
         }
     }
 
     /**
      * divine agents too buyer and seller
+     *
      * @param item
      * @param agents
      */
-    static void divideAgents(ItemName item, LinkedList<Agent> agents) {
+    private static void divideAgents(ItemName item, LinkedList<Agent> agents) {
         buyers.clear();
         salesMen.clear();
 
@@ -67,23 +65,20 @@ public class Trading {
 
     /**
      * meet random salesMan and buyer - check if trasation is possible make trasation
+     *
      * @param salesMan
      * @param buyer
      * @param item
      */
-    static void oneMeeting(Agent salesMan, Agent buyer, ItemName item) {
+    private static void oneMeeting(Agent salesMan, Agent buyer, ItemName item) {
         int sellPrice = salesMan.items.get(item).sellPrice;
         int buyPrice;
         if (item == ItemName.FOOD) buyPrice = Math.min(foodPrice(buyer, salesMan), buyer.gold);
         else buyPrice = Math.min(buyer.items.get(item).buyPrice, buyer.gold);
 
         if (sellPrice > buyPrice) {
-
-
-            if (sellPrice > 1)
-                salesMan.items.get(item).sellPrice--;
-            if (buyPrice < buyer.gold)
-                buyer.items.get(item).buyPrice++;
+            if (sellPrice > 1) salesMan.items.get(item).sellPrice--;
+            if (buyPrice < buyer.gold) buyer.items.get(item).buyPrice++;
         } else {
 
             //debug
@@ -115,13 +110,14 @@ public class Trading {
 
     /**
      * transaction between salesMan and byer
+     *
      * @param salesMan
      * @param buyer
      * @param item
      * @param sellPrice
      * @param buyPrice
      */
-    static void transaction(Agent salesMan, Agent buyer, ItemName item, int sellPrice, int buyPrice) {
+    private static void transaction(Agent salesMan, Agent buyer, ItemName item, int sellPrice, int buyPrice) {
         int itemPrice = (buyPrice - sellPrice) / 2 + sellPrice;
         salesMan.items.get(item).sellPrice = itemPrice;
         salesMan.items.get(item).amount--;
@@ -134,27 +130,28 @@ public class Trading {
 
     /**
      * create random salesMan
+     *
      * @return
      */
-    static Agent salesMan() {
-        return salesMen.get((int) Math.random() * (salesMen.size() - 1));
+    private static Agent salesMan() {
+        return salesMen.get(randomBetween(0, (salesMen.size() - 1)));
     }
 
     /**
      * create random buyer
+     *
      * @return
      */
-    static Agent buyer() {
-        return buyers.get((int) Math.random() * (salesMen.size() - 1));
+    private static Agent buyer() {
+        return buyers.get(randomBetween(0, (salesMen.size() - 1)));
     }
 
     /**
-     *
      * @param buyer
      * @param salesMan
      * @return how much is for food after mofification
      */
-    static int foodPrice(Agent buyer, Agent salesMan) {
+    private static int foodPrice(Agent buyer, Agent salesMan) {
         int buyPrice = buyer.items.get(ItemName.FOOD).buyPrice;
         int foodAmount = buyer.items.get(ItemName.FOOD).amount;
         if (foodAmount > 0)
@@ -171,9 +168,10 @@ public class Trading {
 
     /**
      * when there is problem with food agent have one additional trade
+     *
      * @param salesMan
      */
-    static void foodPanic(Agent salesMan) {
+    private static void foodPanic(Agent salesMan) {
         for (Agent agent : buyers) {
             if (agent.items.get(ItemName.FOOD).amount == -3) {
                 oneMeeting(salesMan, agent, ItemName.FOOD);

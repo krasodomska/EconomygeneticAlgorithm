@@ -1,19 +1,18 @@
 package main;
 
+import static main.LifeCycle.*;
+
 public class ExistingWorld {
     static Buildings buildings = new Buildings(Environment.numberOfMonthPerYear);
     static BuildingsListForDraw buildingsListForDraw = new BuildingsListForDraw();
     static boolean noPlace = false;
-
-
-
 
     /**
      * there are same action that have to be done before simulation start running
      */
     public static void init() {
         Agents.createAgents(11, Environment.numberOfMonthPerYear);
-        Agents.agents.forEach(agent -> System.out.println(agent));
+        Agents.agents.forEach(System.out::println);
         System.out.println();
     }
 
@@ -22,28 +21,21 @@ public class ExistingWorld {
         while (testingTimeInMonth > 0) {
             Environment.newMonth();
 
-            LifeCycle.production();
-            LifeCycle.consumption();
-            LifeCycle.trading();
-
-            for(Agent agent: Agents.agents){
-                if (agent.gold < 0)return;
-            }
-            LifeCycle.reproduction();
-            LifeCycle.dieing();
-            LifeCycle.ageing();
+            production();
+            trading();
+            consumption();
+            reproduction();
+            dying();
+            aging();
             testingTimeInMonth--;
 
-
-            System.out.println(i + " number of agents: "+ Agents.agents.size());
+            System.out.println(i + " number of agents: " + Agents.agents.size());
             i++;
 
             //debug
 //            main.Agents.agents.forEach(agent -> System.out.println(agent));
 //            System.out.println();
-
         }
-
     }
 
 
@@ -51,7 +43,7 @@ public class ExistingWorld {
         init();
         int testingTimeInMonth = 300;
         gameRun(testingTimeInMonth);
-        Agents.agents.forEach(agent -> System.out.println(agent));
+        Agents.agents.forEach(System.out::println);
         System.out.println();
         System.out.println();
         System.out.println("Place: " + Environment.placeInTheWorld);

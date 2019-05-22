@@ -5,33 +5,29 @@ import java.util.LinkedList;
 public class LifeCycle {
 
     static void production() {
-        Agents.agents.forEach(agent ->
-                agent.production(Environment.currentMonth));
+        Agents.agents.forEach(agent -> agent.production(Environment.currentMonth));
     }
 
     static void consumption() {
-        Agents.agents.forEach(agent ->
-                agent.consumption(Environment.currentMonth));
+        Agents.agents.forEach(agent -> agent.consumption(Environment.currentMonth));
 
     }
 
     static void reproduction() {
         LinkedList<Agent> newAgents = new LinkedList<>();
-        Agents.agents.forEach(agent -> {
-            if (agent.newAgent) newAgents.add(agent);
-        });
+        Agents.agents.forEach(agent -> { if (agent.newAgent) newAgents.add(agent); });
 
         for (Agent newAgent : newAgents) {
             Agents.agents.get(Agents.agents.indexOf(newAgent)).reproduction();
         }
     }
 
-    static void dieing(){
+    static void dying() {
         LinkedList<Agent> deadAgent = new LinkedList<>();
 
         Agents.agents.forEach(agent -> {
             if (agent.starvationDeath()) deadAgent.add(agent);
-            else if(agent.randomDeath(0.005)) deadAgent.add(agent);
+            else if (agent.randomDeath(0.005)) deadAgent.add(agent);
         });
 
         deadAgent.forEach(zombie -> {
@@ -44,12 +40,11 @@ public class LifeCycle {
         });
     }
 
-    static void ageing(){
-        Agents.agents.forEach(agent ->
-                agent.age++);
+    static void aging() {
+        Agents.agents.forEach(agent -> agent.age++);
     }
 
-    static void trading(){
+    static void trading() {
         Trading.trade(30, Agents.agents);
     }
 }
