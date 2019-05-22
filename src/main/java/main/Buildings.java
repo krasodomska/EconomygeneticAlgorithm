@@ -29,39 +29,39 @@ public class Buildings {
         createMonthList(numberOfMonthPerYear);
 
         buildings.put(BuildingName.BASKET,
-                new Building(BuildingName.BASKET, 5,0, ItemName.FOOD, allYearProduction, false));
+                new Building(BuildingName.BASKET, ItemName.FOOD, 5,0, allYearProduction, false));
         buildings.put(BuildingName.COW,
-                new Building(BuildingName.COW, 30, -10, ItemName.FOOD, allYearProduction, true));
+                new Building(BuildingName.COW, ItemName.FOOD, 30, -10, allYearProduction, true));
         buildings.put(BuildingName.FIELD,
-                new Building(BuildingName.FIELD, 150, -10, ItemName.FOOD, twicePerYearProduction, true));
+                new Building(BuildingName.FIELD, ItemName.FOOD, 150, -10, twicePerYearProduction, true));
         buildings.put(BuildingName.ORCHAND,
-                new Building(BuildingName.ORCHAND, 20, -10, ItemName.FOOD, allYearProduction, false));
+                new Building(BuildingName.ORCHAND, ItemName.FOOD, 20, -10, allYearProduction, false));
 
         buildings.put(BuildingName.AXE,
-                new Building(BuildingName.AXE, 5,0, ItemName.LUMBER, allYearProduction, false));
+                new Building(BuildingName.AXE, ItemName.LUMBER, 5,0, allYearProduction, false));
         buildings.put(BuildingName.BRICK_MANUFACTUR,
-                new Building(BuildingName.BRICK_MANUFACTUR, 30, -10, ItemName.LUMBER, allYearProduction,true));
+                new Building(BuildingName.BRICK_MANUFACTUR, ItemName.LUMBER, 30, -10, allYearProduction,true));
         buildings.put(BuildingName.QUARRY,
-                new Building(BuildingName.QUARRY, 150, -10, ItemName.LUMBER, twicePerYearProduction,true));
+                new Building(BuildingName.QUARRY, ItemName.LUMBER, 150, -10, twicePerYearProduction,true));
 
         buildings.put(BuildingName.CRAFTING_SPOT,
-                new Building(BuildingName.CRAFTING_SPOT, 5,0, ItemName.TOOL, allYearProduction,false));
+                new Building(BuildingName.CRAFTING_SPOT, ItemName.TOOL, 5,0, allYearProduction,false));
         buildings.put(BuildingName.TOOL_MANUFACTUR,
-                new Building(BuildingName.TOOL_MANUFACTUR, 30, -10, ItemName.TOOL, allYearProduction,true));
+                new Building(BuildingName.TOOL_MANUFACTUR, ItemName.TOOL, 30, -10, allYearProduction,true));
         buildings.put(BuildingName.TOOL_JOURNEYMAN,
-                new Building(BuildingName.TOOL_JOURNEYMAN, 150, -10, ItemName.TOOL, twicePerYearProduction,true));
+                new Building(BuildingName.TOOL_JOURNEYMAN, ItemName.TOOL, 150, -10, twicePerYearProduction,true));
 
         buildings.put(BuildingName.LOOM,
-                new Building(BuildingName.LOOM, 5,0, ItemName.CLOTHES, allYearProduction,false));
+                new Building(BuildingName.LOOM, ItemName.CLOTHES, 5,0, allYearProduction,false));
         buildings.put(BuildingName.CLOTHES_MANUFACTUR,
-                new Building(BuildingName.CLOTHES_MANUFACTUR, 30, -10, ItemName.CLOTHES, allYearProduction,true));
+                new Building(BuildingName.CLOTHES_MANUFACTUR, ItemName.CLOTHES, 30, -10, allYearProduction,true));
         buildings.put(BuildingName.CLOTHES_JOURNEYMAN,
-                new Building(BuildingName.CLOTHES_JOURNEYMAN, 150, -10, ItemName.CLOTHES, twicePerYearProduction, true));
+                new Building(BuildingName.CLOTHES_JOURNEYMAN, ItemName.CLOTHES, 150, -10, twicePerYearProduction, true));
 
         buildings.put(BuildingName.GOLD_STREAM,
-                new Building(BuildingName.GOLD_STREAM, 10,0, ItemName.GOLD, allYearProduction,false));
+                new Building(BuildingName.GOLD_STREAM, ItemName.GOLD, 10,0, allYearProduction,false));
         buildings.put(BuildingName.GOLD_MINE,
-                new Building(BuildingName.GOLD_MINE, 30, -10, ItemName.GOLD, allYearProduction,true));
+                new Building(BuildingName.GOLD_MINE, ItemName.GOLD, 30, -10, allYearProduction,true));
     }
 
 }

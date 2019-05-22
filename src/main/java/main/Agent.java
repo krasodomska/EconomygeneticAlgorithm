@@ -3,9 +3,13 @@ package main;
 import coreElements.BuildingName;
 import coreElements.ItemName;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
+
+import static coreElements.Utils.numberBetween;
+import static main.Buildings.buildings;
+import static main.BuildingsListForDraw.*;
 
 public class Agent {
     String familyColor;
@@ -17,68 +21,20 @@ public class Agent {
     int age;
     int takingPlace;
 
-    static int numberOfBuyPerDay = 3;
     BuildingsListForDraw buildingsListForDraw = new BuildingsListForDraw();
 
 
-    HashMap<BuildingName, Integer> buildings = new HashMap<>();
-    HashMap<ItemName, Item> items = new HashMap<>();
-    ArrayList<Integer> monthWithClothesDestruction = new ArrayList<>();
-    ArrayList<Integer> monthWithHouseDestruction = new ArrayList<>();
+    HashMap<BuildingName, Integer> agentBuildings = new HashMap<>();
+    HashMap<ItemName, Stock> items = new HashMap<>();
 
-    /**
-     * crate list of items that agent have
-     */
-    void createItemsList() {
-        for (ItemName name : ItemName.values()) {
-            items.put(name, new Item(name));
-        }
-//        for (coreElements.ItemName item : items.keySet()) {
-//
-//        }
-
-    }
-
-    /**
-     * set when clothes will be destroy
-     */
-    void setMonthWithClothesDestruction() {
-        monthWithClothesDestruction.add(1);
-        monthWithClothesDestruction.add(4);
-        monthWithClothesDestruction.add(7);
-        monthWithClothesDestruction.add(10);
-    }
-
-    /**
-     * set when hause will be destroy
-     */
-    void setMonthWithHouseDestruction() {
-        monthWithHouseDestruction.add(2);
-        monthWithHouseDestruction.add(5);
-        monthWithHouseDestruction.add(11);
-
-    }
-
-    /**
-     * checking how many place take buildings form this agent
-     */
-    void takePlace() {
-        takingPlace = 0;
-        for (BuildingName building : buildings.keySet()) {
-            takingPlace += Buildings.buildings.get(building).takingPlace;
-        }
-    }
-
-    public Agent(String familyColor, int startGold, HashMap<BuildingName, Integer> buildings, int checkingLumbersMonth, HashMap<ItemName, Item> items) {
+    public Agent(String familyColor, int startGold, HashMap<BuildingName, Integer> agentBuildings, int checkingLumbersMonth, HashMap<ItemName, Stock> items) {
         this.gold = startGold;
-        this.buildings.putAll(buildings);
+        this.agentBuildings.putAll(agentBuildings);
         this.familyColor = familyColor;
         this.checkingLumbersMonth = checkingLumbersMonth;
         damageHouse = false;
         this.age = 0;
         createItemsList();
-        setMonthWithHouseDestruction();
-        setMonthWithClothesDestruction();
 
         for (ItemName item : items.keySet()) {
             if (this.items.containsKey(item)) {
@@ -95,26 +51,51 @@ public class Agent {
     }
 
     /**
+     * crate list of items that agent have
+     */
+    void createItemsList() {
+        for (ItemName name : ItemName.values()) {
+            items.put(name, new Stock(name));
+        }
+    }
+
+    /**
+     * checking how many place take agentBuildings form this agent
+     */
+    void takePlace() {
+        takingPlace = 0;
+        for (BuildingName building : agentBuildings.keySet()) {
+            takingPlace += buildings.get(building).takingPlace;
+        }
+    }
+
+    /**
      * add amount of item that was produced during month
      *
      * @param currentMonth - checking if in this month production work
      */
     public void production(int currentMonth) {
-        for (BuildingName building : buildings.keySet()) {
-            float modifier = 1;
-            if (items.get(ItemName.CLOTHES).amount == 0) modifier -= 0.25;
-            if (damageHouse) modifier -= 0.25;
-            if (Buildings.buildings.get(building).toolNeed && items.get(ItemName.TOOL).amount == 0) modifier -= 0.5;
-            //hardcoding ORCHAND
-            if (building == BuildingName.ORCHAND && age < 12) return;
-            items.get(Buildings.buildings.get(building).itemProduced).amount +=
-                    Buildings.buildings.get(building).production(buildings.get(building), currentMonth) * modifier;
-            if (Buildings.buildings.get(building).itemProduced == ItemName.GOLD) {
-                gold += items.get(Buildings.buildings.get(building).itemProduced).amount;
-                items.get(Buildings.buildings.get(building).itemProduced).amount = 0;
-
-            }
+        for (BuildingName building : agentBuildings.keySet()) {
+            Building currentBuilding = buildings.get(building);
+            items.get(currentBuilding.itemProduced).amount +=
+                    currentBuilding.production(agentBuildings.get(building), currentMonth, age) * productionModifier(building);
         }
+        mintGold();
+    }
+
+    private void mintGold() {
+        if (items.get(ItemName.GOLD).amount > 0) {
+            gold += items.get(ItemName.GOLD).amount;
+            items.get(ItemName.GOLD).amount = 0;
+        }
+    }
+
+    private float productionModifier(BuildingName building) {
+        float modifier = 1;
+        if (items.get(ItemName.CLOTHES).amount == 0) modifier -= 0.25;
+        if (damageHouse) modifier -= 0.25;
+        if (buildings.get(building).toolNeed && items.get(ItemName.TOOL).amount == 0) modifier -= 0.5;
+        return modifier;
     }
 
     /**
@@ -127,7 +108,7 @@ public class Agent {
         items.get(ItemName.FOOD).amount -= 10;
 
         //lumber
-        if (monthWithHouseDestruction.contains(currentMonth) && items.get(ItemName.LUMBER).amount > 9) {
+        if (Environment.monthWithHouseDestruction.contains(currentMonth) && items.get(ItemName.LUMBER).amount >= 10) {
             items.get(ItemName.LUMBER).amount -= 10;
         } else {
             damageHouse = true;
@@ -135,9 +116,9 @@ public class Agent {
 
 
         if (currentMonth == checkingLumbersMonth) {
-            if (items.get(ItemName.LUMBER).amount > 9) {
+            if (items.get(ItemName.LUMBER).amount >= 10) {
                 items.get(ItemName.LUMBER).amount -= 10;
-                if (items.get(ItemName.LUMBER).amount > 9 && !starvationDeath()) {
+                if (items.get(ItemName.LUMBER).amount >= 10 && !starvationDeath()) {
                     newAgent = true;
                     items.get(ItemName.LUMBER).amount -= 10;
                 }
@@ -146,13 +127,13 @@ public class Agent {
             }
         }
         //clothes
-        if (monthWithClothesDestruction.contains(currentMonth) && items.get(ItemName.CLOTHES).amount > 19) {
+        if (Environment.monthWithClothesDestruction.contains(currentMonth) && items.get(ItemName.CLOTHES).amount >= 20) {
             items.get(ItemName.CLOTHES).amount -= 20;
         }
 
         //tool
-        for (BuildingName building : buildings.keySet()) {
-            if (Buildings.buildings.get(building).toolNeed && items.get(ItemName.TOOL).amount > 9) {
+        for (BuildingName building : agentBuildings.keySet()) {
+            if (buildings.get(building).toolNeed && items.get(ItemName.TOOL).amount >= 10) {
                 items.get(ItemName.TOOL).amount -= 10;
             }
         }
@@ -168,17 +149,16 @@ public class Agent {
     /**
      * random death
      * death ratio is bigger when agent have less clothes, food or damaged house
+     *
      * @param baseDeathRate
      */
     public boolean randomDeath(double baseDeathRate) {
         double random = Math.random();
         double foodModifier = Math.abs(Math.min(items.get(ItemName.FOOD).amount / 300, 0));
         double clothesModifier = (items.get(ItemName.CLOTHES).amount == 0) ? 2 : 1;
-        double damageHauseModifier = (damageHouse) ? 2 : 1;
+        double damageHouseModifier = (damageHouse) ? 2 : 1;
 
-        if (random <= (baseDeathRate + foodModifier) * clothesModifier *damageHauseModifier)
-            return true;
-        return false;
+        return random <= (baseDeathRate + foodModifier) * clothesModifier * damageHouseModifier;
     }
 
     /**
@@ -187,16 +167,11 @@ public class Agent {
     public void reproduction() {
 
         this.gold /= 2;
-//        for (coreElements.ItemName item : items.keySet()) {
-//            if (item == coreElements.ItemName.FOOD) continue;
-//            items.get(item).amount /= 2;
-//        }
 
-        Agent bornAgent = new Agent(familyColor, this.gold, inheriatanceBuildings(), inheriatanceLumberMonth(), this.items);
+        Agent bornAgent = new Agent(familyColor, this.gold, inheritanceBuildings(), inheritanceLumberMonth(), this.items);
         if (Environment.noPlaceInWorld()) {
             bornAgent.buildingsDownGrade();
         }
-
 
         Agents.agents.add(bornAgent);
         Environment.takePlace(bornAgent);
@@ -204,19 +179,16 @@ public class Agent {
     }
 
     /**
-     * when there is too little place agents can have only base buildings
+     * when there is too little place agents can have only base agentBuildings
      */
-    public void buildingsDownGrade() {
-        HashSet<BuildingName> buildingForDemolition = new HashSet<>();
+    private void buildingsDownGrade() {
+        Set<BuildingName> buildingForDemolition = new HashSet<>(agentBuildings.keySet());
 
-        for (BuildingName building : buildings.keySet()) {
-            buildingForDemolition.add(building);
-        }
         for (BuildingName building : buildingForDemolition) {
-            ItemName item = Buildings.buildings.get(building).itemProduced;
-            int buildingsAmount = buildings.get(building);
-            buildings.remove(building);
-            buildings.put(BuildingsListForDraw.baseBuilding.get(item), buildingsAmount);
+            ItemName item = buildings.get(building).itemProduced;
+            int buildingsAmount = agentBuildings.get(building);
+            agentBuildings.remove(building);
+            agentBuildings.put(BuildingsListForDraw.baseBuilding.get(item), buildingsAmount);
         }
         takePlace();
     }
@@ -226,39 +198,25 @@ public class Agent {
      *
      * @return checkingLumberMonth for child of this agent
      */
-    int inheriatanceLumberMonth() {
+    int inheritanceLumberMonth() {
         double random = Math.random();
-        if (random < 0.005) {
-            if (checkingLumbersMonth + 2 > 12)
-                return checkingLumbersMonth + 2 - 12;
-            else return checkingLumbersMonth + 2;
-        } else if (random < 0.01) {
-            if (checkingLumbersMonth - 2 < 1)
-                return checkingLumbersMonth - 2 + 12;
-            else return checkingLumbersMonth - 2;
-        } else if (random < 0.025) {
-            if (checkingLumbersMonth + 1 > 12)
-                return checkingLumbersMonth + 1 - 12;
-            else return checkingLumbersMonth + 1;
-        } else if (random < 0.04) {
-            if (checkingLumbersMonth - 1 < 1)
-                return checkingLumbersMonth - 1 + 12;
-            else return checkingLumbersMonth - 1;
-
-        }
+        if (random < 0.005) return (checkingLumbersMonth + 2) % 12;
+        else if (random < 0.01) return (checkingLumbersMonth - 2) % 12;
+        else if (random < 0.025) return (checkingLumbersMonth + 1) % 12;
+        else if (random < 0.04) return (checkingLumbersMonth - 1) % 12;
         return checkingLumbersMonth;
     }
 
     /**
-     * genetic check which buildings will be inherited and in which way
+     * genetic check which agentBuildings will be inherited and in which way
      *
-     * @return childs list of buildings
+     * @return childs list of agentBuildings
      */
-    HashMap<BuildingName, Integer> inheriatanceBuildings() {
+    HashMap<BuildingName, Integer> inheritanceBuildings() {
         HashMap<BuildingName, Integer> newBuildings = new HashMap<>();
 
-        for (BuildingName building : buildings.keySet()) {
-            int howMany = buildings.get(building);
+        for (BuildingName building : agentBuildings.keySet()) {
+            int howMany = agentBuildings.get(building);
             while (howMany > 0) {
                 BuildingName newBuilding = buildingMutation(building);
                 if (newBuildings.containsKey(newBuilding)) {
@@ -270,28 +228,20 @@ public class Agent {
             }
         }
 
-
         return newBuildings;
     }
 
     /**
-     * genetic inherietance of single building
+     * genetic inheritance of single building
      *
      * @param building - building form parent (this agent)
      * @return mutated building
      */
     BuildingName buildingMutation(BuildingName building) {
         double random = Math.random();
-        if (random < 0.01) {
-            return buildingsListForDraw.allBuildings.get(
-                    (int) (Math.random() * (buildingsListForDraw.allBuildings.size() - 1)));
-        } else if (random < 0.04) {
-            return buildingsListForDraw.buildingsProductSameAmountOfItem.get(Buildings.buildings.get(building).scaledProfit).
-                    get((int) (Math.random() * (buildingsListForDraw.buildingsProductSameAmountOfItem.get(Buildings.buildings.get(building).scaledProfit).size())));
-        } else if (random < 0.1) {
-            return buildingsListForDraw.buildingsProductSameItem.get(Buildings.buildings.get(building).itemProduced).
-                    get((int) (Math.random() * (buildingsListForDraw.buildingsProductSameItem.get(Buildings.buildings.get(building).itemProduced).size())));
-        }
+        if (random < 0.01) return allBuildings.get(numberBetween(0, allBuildings.size() - 1));
+        else if (random < 0.04) return getBuildingsWithEqualProfit(building).get(numberBetween(0, getBuildingsWithEqualProfit(building).size()));
+        else if (random < 0.1) return getBuildingsWithSameItem(building).get(numberBetween(0, getBuildingsWithSameItem(building).size()));
         return building;
     }
 
@@ -299,14 +249,14 @@ public class Agent {
     @Override
     public String toString() {
         String agent = familyColor + " age:" + age + " building:";
-        for (BuildingName building : buildings.keySet()) {
-            agent += " " + building + " " + buildings.get(building) + ",";
+        for (BuildingName building : agentBuildings.keySet()) {
+            agent += " " + building + " " + agentBuildings.get(building) + ",";
         }
 //        agent += " taking place: " + takingPlace;
         agent += "; gold: " + gold + "; ";
-        for (Item item : items.values()) {
-            agent += " " + item.name + ": " + item.amount
-                    + ", sellPrice: " + item.sellPrice + ", buyPrice: " + item.buyPrice;
+        for (Stock stock : items.values()) {
+            agent += " " + stock.name + ": " + stock.amount
+                    + ", sellPrice: " + stock.sellPrice + ", buyPrice: " + stock.buyPrice;
         }
 
         return agent;

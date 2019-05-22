@@ -2,13 +2,13 @@ package main;
 
 import coreElements.ItemName;
 
-public class Item {
+public class Stock {
     ItemName name;
     int sellPrice = 1;
     int buyPrice = 1;
     int amount = 0;
 
-    Item(ItemName name){
+    Stock(ItemName name){
         this.name = name;
 //        sellPrice= startPrice;
 //        buyPrice = startPrice;
